@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Search Results{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h2 class="text-xl font-bold mb-4">Results for "{{ query }}"</h2>
+    {% if results %}
+        <ul>
+            {% for result in results %}
+                <li>{{ result }}</li>  <!-- Update this based on your model -->
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No results found.</p>
+    {% endif %}
+</div>
+{% endblock %}

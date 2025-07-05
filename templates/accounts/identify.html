@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Identify User{% endblock %}
+
+{% block content %}
+<h2 style="text-align: center;">Identify User</h2>
+
+<form action="" method="post" style="max-width: 400px; margin: auto;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Identify">
+</form>
+{% endblock %}

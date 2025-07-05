@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Your Bookings{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">Your Bookings</h2>
+
+<!-- Filter Form -->
+<form method="get" class="mb-4">
+  <div class="input-group">
+    <input type="text" name="movie" value="{{ request.GET.movie }}" class="form-control" placeholder="Search your movie title...">
+    <button type="submit" class="btn btn-outline-primary">Filter</button>
+  </div>
+</form>
+
+{% if bookings %}
+  {% for booking in bookings %}
+    <div class="card mb-4 shadow-sm">
+      <div class="row g-0">
+        <div class="col-md-2">
+          {% if booking.showtime.movie.image %}
+            <img src="{{ booking.showtime.movie.image.url }}" class="img-fluid rounded-start" alt="{{ booking.showtime.movie.title }}">
+          {% else %}
+            <img src="{% static 'images/default_movie.jpg' %}" class="img-fluid rounded-start" alt="Default Poster">
+          {% endif %}
+        </div>
+        <div class="col-md-10">
+          <div class="card-body">
+            <h5 class="card-title">{{ booking.showtime.movie.title }}</h5>
+            <p class="card-text">
+              <strong>Date & Time:</strong> {{ booking.showtime.booking_time|date:"F j, Y, g:i a" }}<br>
+              <strong>Theater:</strong> {{ booking.showtime.theater.name }}<br>
+              <strong>Quantity:</strong> {{ booking.quantity }}<br>
+              <strong>Seats:</strong>
+              {% for seat_entry in booking.bookingseat_set.all %}
+                {{ seat_entry.seat.row_label }}{{ seat_entry.seat.seat_number }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}
+            </p>
+            <p>
+              <strong>Address:</strong> {{ booking.showtime.theater.address }}<br>
+              <strong>Amount Paid:</strong> ₹{{ booking.total_amount }}<br>
+              <strong>Booking Date & Time:</strong> {{ booking.booking_time|date:"F j, Y, g:i a" }}<br>
+              <strong>Payment Method:</strong> {{ booking.payment.payment_method }}<br>
+              <strong>Booking ID:</strong> {{ booking.id }}
+            </p>
+            {% if booking.payment.qr_code %}
+              <div>
+                <strong>QR Code:</strong><br>
+                <img src="{{ booking.payment.qr_code.url }}" alt="QR Code" width="150">
+              </div>
+            {% else %}
+              <p><em>No QR code available</em></p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>You have no bookings yet.</p>
+{% endif %}
+{% endblock %}

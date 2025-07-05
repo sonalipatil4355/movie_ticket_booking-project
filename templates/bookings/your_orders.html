@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Your Booked Shows{% endblock %}
+{% load static %}
+
+{% block content %}
+<h2 class="mb-4">Your Booked Shows</h2>
+
+{% if bookings %}
+  {% for booking in bookings %}
+    <div class="card mb-4 shadow-sm">
+      <div class="row g-0">
+        <div class="col-md-3">
+          <img src="{{ booking.showtime.movie.image.url }}" class="img-fluid rounded-start" alt="{{ booking.showtime.movie.name }}">
+        </div>
+        <div class="col-md-9">
+          <div class="card-body">
+            <h5 class="card-title">{{ booking.showtime.movie.name }}</h5>
+            <p class="card-text">
+              <strong>Theater:</strong> {{ booking.showtime.theater.name }} <br>
+              <strong>Show Date & Time:</strong> {{ booking.showtime.booking_time|date:"F j, Y, g:i A" }} <br>
+              <strong>Seats:</strong>
+              {% for seat in booking.bookingseat.all %}
+                {{ seat.seat_number }}{% if not forloop.last %}, {% endif %}
+              {% endfor %}<br>
+              <strong>Quantity:</strong> {{ booking.quantity }}<br>
+              <strong>Amount Paid:</strong> ₹{{ booking.total_amount }}<br>
+              <strong>Booking ID:</strong> {{ booking.id }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+{% else %}
+  <p>You have no bookings yet.</p>
+{% endif %}
+{% endblock %}

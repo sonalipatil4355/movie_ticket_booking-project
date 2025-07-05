@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2 style="text-align: center; margin-bottom: 20px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; color: #333;">
+    Enter OTP
+</h2>
+
+<form method="POST" style="max-width: 400px; margin: 0 auto; padding: 25px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);">
+    {% csrf_token %}
+
+    <div style="display: flex; justify-content: center; gap: 16px; margin-bottom: 25px;">
+        <input type="text" name="otp1" maxlength="1" required
+               style="width: 55px; height: 55px; text-align: center; font-size: 24px; border: 2px solid #ccc; border-radius: 8px; transition: border-color 0.3s;">
+        <input type="text" name="otp2" maxlength="1" required
+               style="width: 55px; height: 55px; text-align: center; font-size: 24px; border: 2px solid #ccc; border-radius: 8px; transition: border-color 0.3s;">
+        <input type="text" name="otp3" maxlength="1" required
+               style="width: 55px; height: 55px; text-align: center; font-size: 24px; border: 2px solid #ccc; border-radius: 8px; transition: border-color 0.3s;">
+        <input type="text" name="otp4" maxlength="1" required
+               style="width: 55px; height: 55px; text-align: center; font-size: 24px; border: 2px solid #ccc; border-radius: 8px; transition: border-color 0.3s;">
+    </div>
+
+    <div style="text-align: center;">
+        <input type="submit" value="Verify OTP"
+               style="background-color: #007bff; color: white; padding: 12px 28px; font-size: 16px; font-weight: bold; border: none; border-radius: 6px; cursor: pointer; transition: background-color 0.3s;">
+    </div>
+</form>
+
+<script>
+  
+    const inputs = document.querySelectorAll('input[type="text"]');
+    inputs.forEach((input, index) => {
+        input.addEventListener('input', () => {
+            if (input.value.length === 1 && index < inputs.length - 1) {
+                inputs[index + 1].focus();
+            }
+        });
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                inputs[index - 1].focus();
+            }
+        });
+    });
+</script>
+{% endblock %}

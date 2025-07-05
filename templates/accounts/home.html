@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Welcome to the movie ticket booking, {{ user.username }}</h1>
+    <!-- Movie Grid -->
+    <h2 style="text-align:center; margin-top: 30px;">Featured Movies</h2>
+    <div class="movies-grid">
+        {% for movie in movies %}
+            <div>
+                <img src="{{ movie.image.url }}">
+                <div class="movie-title">{{ movie.title }}</div>
+            </div>
+        {% empty %}
+            <p style="text-align:center;">No movies available right now.</p>
+        {% endfor %}
+    </div>
+
+    <a href="{% url 'logout' %}">
+        <button>Logout</button>
+    </a>   
+{% endblock %}

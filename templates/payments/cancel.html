@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block title %}Payment Failure{% endblock %}
+
+{% block content %}
+{% load static %}
+
+  <style>
+    body {
+      background-color: #fceaea;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .failed-container {
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    .failed-icon {
+      font-size: 60px;
+      color: #e53935;
+    }
+
+    h1 {
+      color: #b71c1c;
+      margin-top: 20px;
+    }
+
+    p {
+      color: #555;
+      margin: 10px 0 20px;
+    }
+
+    .btn {
+      display: inline-block;
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #e53935;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .btn:hover {
+      background-color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+
+<div class="failed-container">
+  <div class="failed-icon">❌</div>
+  <h1>Payment Failed</h1>
+  <p>Sorry! Your transaction could not be completed.<br>Please try again or contact support.</p>
+  <a href="{% url 'pay' booking.id %}" class="btn">Try Again</a>
+</div>
+
+{% endblock %}

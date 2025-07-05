@@ -1,0 +1,301 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+<style>
+  .showtime-header {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+
+  .showtime-header h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+  }
+
+  .showtimes button {
+    background-color: #ecf0f1;
+    border: 1px solid #3498db;
+    color: #3498db;
+    margin: 5px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+  }
+
+  .showtimes button:hover {
+    background-color: #3498db;
+    color: white;
+  }
+
+  .container {
+    max-width: auto;
+    margin: 0 auto;
+    padding: 15px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.08);
+  }
+
+  .category-label {
+    font-weight: 600;
+    font-size: 18px;
+    margin: 30px 0 10px;
+    color: #2c3e50;
+    border-left: 5px solid #27ae60;
+    padding-left: 10px;
+  }
+
+  .seating-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .seat-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .row-label {
+    width: 40px;
+    font-weight: bold;
+    margin-right: 8px;
+    text-align: center;
+    color: #34495e;
+  }
+
+  .seats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .seat {
+    width: 34px;
+    height: 34px;
+    background-color: #ecf0f1;
+    border: 2px solid #27ae60;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+
+  .seat:hover {
+    background-color: #d2f4d4;
+  }
+
+  .seat.selected {
+    background-color: #27ae60;
+    color: #fff;
+    font-weight: bold;
+    border-color: #1e8449;
+  }
+
+  .seat.disabled {
+    background-color: #ccc;
+    color: #888;
+    border: 2px solid #999;
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 30px;
+  }
+
+  .pay-button {
+    background-color: #e74c3c;
+    color: #fff;
+    padding: 12px 30px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .pay-button:hover {
+    background-color: #c0392b;
+  }
+
+  #selectedSeatsDisplay {
+    font-weight: bold;
+    margin-top: 20px;
+    color: #2c3e50;
+  }
+
+  @media screen and (max-width: 600px) {
+    .container {
+      padding: 10px;
+    }
+
+    .row-label {
+      width: 30px;
+      font-size: 12px;
+    }
+
+    .seat {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+
+    .category-label {
+      font-size: 16px;
+    }
+
+    .pay-button {
+      font-size: 14px;
+      padding: 10px 20px;
+    }
+  }
+</style>
+
+<div class="showtime-header">
+  <h2>{{showtime.movie}}</h2>
+  <p>{{showtime.theater.address}}</p>
+  <p>{{showtime.showtime}}</p>
+  <div class="showtimes">
+    <button>{{showtime.showtime|time:"H:i A"}}</button>
+  </div>
+</div>
+
+<div class="container">
+  <div class="seating">
+
+    <!-- Recliner -->
+    <div class="category-label">Rs. {{showtime.recliner_price}} RECLINER</div>
+    <div class="seating-grid">
+      {% for row_label, seats in seat_rows.items %}
+        {% if row_label.1|lower == 'recliner' %}
+        <div class="seat-row">
+          <div class="row-label">{{ row_label.0 }}</div>
+          <div class="seats">
+            {% for seat in seats %}
+              <div class="seat {% if seat == 0 %}disabled{% endif %}"
+                data-seat-id="{{ seat.id }}"
+                data-row-label="{{ seat.row_label }}"
+                data-seat-number="{{ seat.seat_number }}"
+                data-price="{{showtime.recliner_price}}">
+                {{ seat.seat_number }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Gold -->
+    <div class="category-label">Rs. {{showtime.gold_price}} GOLD</div>
+    <div class="seating-grid">
+      {% for row_label, seats in seat_rows.items %}
+        {% if row_label.1|lower == 'gold' %}
+        <div class="seat-row">
+          <div class="row-label">{{ row_label.0 }}</div>
+          <div class="seats">
+            {% for seat in seats %}
+              <div class="seat {% if seat == 0 %}disabled{% endif %}"
+                data-seat-id="{{ seat.id }}"
+                data-row-label="{{ seat.row_label }}"
+                data-seat-number="{{ seat.seat_number }}"
+                data-price="{{showtime.gold_price}}">
+                {{ seat.seat_number }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <!-- Silver -->
+    <div class="category-label">Rs. {{showtime.silver_price}} SILVER</div>
+    <div class="seating-grid">
+      {% for row_label, seats in seat_rows.items %}
+        {% if row_label.1|lower == 'silver' %}
+        <div class="seat-row">
+          <div class="row-label">{{ row_label.0 }}</div>
+          <div class="seats">
+            {% for seat in seats %}
+              <div class="seat {% if seat == 0 %}disabled{% endif %}"
+                data-seat-id="{{ seat.id }}"
+                data-row-label="{{ seat.row_label }}"
+                data-seat-number="{{ seat.seat_number }}"
+                data-price="{{showtime.silver_price}}">
+                {{ seat.seat_number }}
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      {% endfor %}
+    </div>
+
+    <form method="POST" action="{% url 'book_ticket' show_id=showtime.id %}">
+      {% csrf_token %}
+      <input type="hidden" name="selected_seats" id="selectedSeatsInput">
+      <input type="hidden" name="total_amount" id="total_amount">
+      <p id="selectedSeatsDisplay">Selected Seats: </p>
+      <button type="submit" class="pay-button" id="payButton">Pay Rs.0</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const seatElements = document.querySelectorAll('.seat');
+    const selectedSeatsInput = document.getElementById('selectedSeatsInput');
+    const selectedSeatsDisplay = document.getElementById('selectedSeatsDisplay');
+    const payButton = document.getElementById('payButton');
+    const totalamountinput = document.getElementById('total_amount');
+
+    let selectedSeats = [];
+    let totalPrice = 0;
+
+    seatElements.forEach(seat => {
+      seat.addEventListener('click', () => {
+        if (seat.classList.contains('disabled')) return;
+
+        const seatId = seat.dataset.seatId;
+        const row = seat.dataset.rowLabel;
+        const number = seat.dataset.seatNumber;
+        const price = parseInt(seat.dataset.price, 10);
+        const seatCode = `${row}${number}`;
+        const seatKey = seatCode;
+
+        const existingIndex = selectedSeats.findIndex(s => s.key === seatKey);
+
+        if (existingIndex > -1) {
+          seat.classList.remove('selected');
+          selectedSeats.splice(existingIndex, 1);
+          totalPrice -= price;
+        } else {
+          seat.classList.add('selected');
+          selectedSeats.push({ id: seatId, row, number, price, seatCode, key: seatKey });
+          totalPrice += price;
+        }
+
+        selectedSeats.sort((a, b) => {
+          if (a.row === b.row) return a.number - b.number;
+          return a.row.localeCompare(b.row);
+        });
+
+        selectedSeatsInput.value = JSON.stringify(selectedSeats);
+        totalamountinput.value = totalPrice;
+        selectedSeatsDisplay.innerText = `Selected Seats: ${selectedSeats.map(s => s.seatCode).join(', ') || 'None'}`;
+        payButton.innerText = `Pay Rs.${totalPrice}`;
+      });
+    });
+  });
+</script>
+
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f8;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 30px auto;
+    padding: 20px;
+  }
+
+  .movie-header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .movie-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    color: #2c3e50;
+  }
+
+  .date-selector {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 15px;
+  }
+
+  .date-button {
+    padding: 8px 14px;
+    border: 2px solid #e0e0e0;
+    background-color: #ffffff;
+    border-radius: 8px;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none;
+    text-align: center;
+    width: 70px;
+    transition: 0.3s ease;
+  }
+
+  .date-button.active {
+    background-color: #f84464;
+    color: #fff;
+    border-color: #f84464;
+  }
+
+  .date-button:hover {
+    background-color: #f2f2f2;
+  }
+
+  .theater-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 20px 25px;
+    margin-bottom: 30px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
+    transition: 0.3s ease;
+  }
+
+  .theater-card:hover {
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.1);
+  }
+
+  .theater-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    color: #1e1e1e;
+  }
+
+  .theater-location {
+    font-size: 14px;
+    color: #6c757d;
+    margin-bottom: 15px;
+  }
+
+  .showtime-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .show-btn {
+    padding: 8px 16px;
+    border: 2px solid #2ecc71;
+    border-radius: 6px;
+    color: #2ecc71;
+    background-color: #eafaf1;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.3s ease;
+  }
+
+  .show-btn:hover {
+    background-color: #2ecc71;
+    color: #fff;
+  }
+
+  .no-show {
+    font-size: 15px;
+    color: #999;
+    font-style: italic;
+  }
+</style>
+
+<div class="container">
+  <!-- 🎬 Movie Title and Date Picker -->
+  <div class="movie-header">
+    <h2>{{ movie.title }} <span class="text-sm text-gray-600">({{ movie.language }})</span></h2>
+    <div class="date-selector">
+      {% for day in next_7_days %}
+        <a href="{% url 'showtimes' movie.slug day|date:'Y-m-d' %}"
+           class="date-button {% if day == selected_date %}active{% endif %}">
+          {{ day|date:"D" }}<br>{{ day|date:"d" }} {{ day|date:"b" }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- 🎭 Theater Blocks -->
+  {% for theater in theater_showtimes %}
+    <div class="theater-card">
+      {% if theater %}
+        <div class="theater-name">{{ theater.0.theater.name }}</div>
+        <div class="theater-location">{{ theater.0.theater.city }}, {{ theater.0.theater.address }}</div>
+        <div class="showtime-buttons">
+          {% for show in theater %}
+            <a href="{% url 'seat_selection' show.id %}" class="show-btn">
+            {{ show.showtime|time:"h:i A" }}
+            </a>
+
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="no-show">No shows available</div>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

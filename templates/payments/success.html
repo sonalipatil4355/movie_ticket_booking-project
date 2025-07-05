@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Payment Success{% endblock %}
+
+{% block content %}
+<style>
+  .success-container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    margin-top: 50px;
+  }
+
+  .success-icon {
+    font-size: 60px;
+    color: #4caf50;
+  }
+
+  .btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 16px;
+  }
+
+  .btn:hover {
+    background-color: #45a049;
+  }
+</style>
+
+<div class="success-container">
+  <div class="success-icon">✔</div>
+  <h1>Payment Successful</h1>
+  <p>Thank you! Your transaction has been completed.</p>
+  <a href="{% url 'movie_list' %}" class="btn">Go to Home</a>
+</div>
+{% endblock %}

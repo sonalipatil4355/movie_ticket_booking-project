@@ -1,0 +1,247 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ movie.title }}{% endblock %}
+
+{% block content %}
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #f4f6f8;
+  }
+
+  .container {
+    max-width: 1200px;
+    margin: auto;
+    padding: 2rem 1rem;
+  }
+
+  .movie-box {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    background-color: #fff;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+
+  @media (min-width: 768px) {
+    .movie-box {
+      flex-direction: row;
+    }
+  }
+
+  .movie-image {
+    flex-shrink: 0;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 0.5rem;
+    object-fit: cover;
+    background-color: #f3f3f3;
+  }
+
+  .movie-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .movie-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1f2937;
+  }
+
+  .rating-stars {
+    color: #fbbf24;
+    font-weight: bold;
+    font-size: 1.2rem;
+  }
+
+  .meta-info p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #374151;
+  }
+
+  .button-group a,
+  .rating-button {
+    display: inline-block;
+    margin-right: 1rem;
+    padding: 0.5rem 1.25rem;
+    font-weight: 600;
+    border-radius: 0.375rem;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+  }
+
+  .review-button {
+    background-color: #2563eb;
+    color: #fff;
+  }
+
+  .review-button:hover {
+    background-color: #1d4ed8;
+  }
+
+  .book-button {
+    background-color: #b91010;
+    color: #fff;
+  }
+
+  .book-button:hover {
+    background-color: #9f0e0e;
+  }
+
+  .rating-button {
+    background-color: #10b981;
+    color: white;
+    border: none;
+    cursor: pointer;
+  }
+
+  .rating-button:hover {
+    background-color: #0f9f74;
+  }
+
+  .section {
+    background-color: #fff;
+    padding: 1.5rem;
+    margin-top: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #111827;
+    margin-bottom: 1rem;
+  }
+
+  .cast-list {
+    display: flex;
+    gap: 1rem;
+    overflow-x: auto;
+  }
+
+  .cast-card {
+    min-width: 100px;
+    text-align: center;
+    flex-shrink: 0;
+    background-color: #f9fafb;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+  }
+
+  .cast-card img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+
+  .review {
+    background-color: #f9fafb;
+    border: 1px solid #e5e7eb;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .review-header {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 600;
+  }
+
+  .review-date {
+    font-size: 0.75rem;
+    color: #6b7280;
+  }
+</style>
+
+<div class="container">
+
+  <!-- 🎬 Movie Info -->
+  <div class="movie-box">
+    <div>
+      {% if movie.image %}
+        <img src="{{ movie.image.url }}" alt="{{ movie.title }}" class="movie-image">
+      {% else %}
+        <img src="{% static 'images/default_movie.jpg' %}" alt="Default Poster" class="movie-image">
+      {% endif %}
+    </div>
+
+    <div class="movie-details">
+      <h1 class="movie-title">{{ movie.title }}</h1>
+
+      <div class="rating-stars">
+        ★ {{ rating|default:"0" }}/5
+        <span style="color: #6b7280; font-size: 0.9rem;">({{ no_users }} review{{ no_users|pluralize }})</span>
+      </div>
+
+      <div class="meta-info">
+        <p><strong>Genre:</strong> {{ movie.genre }}</p>
+        <p><strong>Language:</strong> {{ movie.language }}</p>
+        <p><strong>Status:</strong> {{ movie.status }}</p>
+        <p><strong>Duration:</strong> {{ movie.duration_minutes }} minutes</p>
+        <p><strong>Release Date:</strong> {{ movie.release_date }}</p>
+      </div>
+
+      <div class="button-group">
+        <a href="{% url 'add_review' movie.slug %}" class="review-button">Write a Review</a>
+        <a href="{% url 'showtimes' slug=movie.slug date_str=today %}" class="book-button">Book Ticket</a>
+        <a href="{% url 'add_review' movie.slug %}" class="rating-button">Rate This Movie</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- 📝 Synopsis -->
+  <div class="section">
+    <h2 class="section-title">About the Movie</h2>
+    <p>{{ movie.synopsis }}</p>
+  </div>
+
+  <!-- 🎭 Cast -->
+  {% if movie.casts.all %}
+  <div class="section">
+    <h2 class="section-title">Cast</h2>
+    <div class="cast-list">
+      {% for cast in movie.casts.all %}
+      <div class="cast-card">
+        {% if cast.image %}
+          <img src="{{ cast.image.url }}" alt="{{ cast.name }}">
+        {% else %}
+          <img src="{% static 'images/default_avatar.jpg' %}" alt="Default Avatar">
+        {% endif %}
+        <p class="font-medium text-sm mt-2">{{ cast.name }}</p>
+        <p class="text-xs text-gray-500">as {{ cast.role }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% endif %}
+
+  <!-- 🗣 User Reviews -->
+  <div class="section">
+    <h2 class="section-title">User Reviews</h2>
+    {% if reviews %}
+      {% for r in reviews %}
+        <div class="review">
+          <div class="review-header">
+            <span>{{ r.user.username }}</span>
+            <span style="color: #f59e0b;">★ {{ r.rating }}</span>
+          </div>
+          <p class="text-gray-700">{{ r.review_text }}</p>
+          <p class="review-date">{{ r.created_at|date:"M d, Y" }}</p>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-gray-500 italic">No reviews yet. Be the first to write one!</p>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

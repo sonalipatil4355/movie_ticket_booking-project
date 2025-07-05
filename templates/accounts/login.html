@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+{% load socialaccount %}
+
+{% block title %}
+Login - BookMyShow
+{% endblock title %}
+
+{% block content %}
+<style>
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f5f5f5;
+  }
+
+  .login-container {
+    max-width: 400px;
+    margin: 40px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+
+  .login-container h1 {
+    margin-bottom: 20px;
+    font-size: 28px;
+    color: #333;
+    text-align: center;
+  }
+
+  .login-container form p {
+    margin-bottom: 15px;
+  }
+
+  .login-container input[type="text"],
+  .login-container input[type="password"],
+  .login-container input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+  }
+
+  .login-container input[type="submit"] {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+  }
+
+  .login-container input[type="submit"]:hover {
+    background-color: #b0060e;
+  }
+
+  .login-container a {
+    color: #e50914;
+    text-decoration: none;
+  }
+
+  .login-container a:hover {
+    text-decoration: underline;
+  }
+
+  .google-login {
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  .google-login img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+  }
+
+  .google-login-text {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #555;
+  }
+</style>
+
+<div class="login-container">
+  <h1>Login</h1>
+
+  <form method="post" action="">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+    <input type="submit" value="Login">
+
+    <p style="text-align: center; margin-top: 10px;">
+      <a href="{% url 'identify' %}">Forgot Password?</a>
+    </p>
+
+    <p style="text-align: center; margin-top: 20px;">
+      Don't have an account? <a href="{% url 'register' %}">Register</a>
+    </p>
+
+    <!-- Google Login Button -->
+    <div class="google-login">
+      <a href="{% provider_login_url 'google' process='login' %}?prompt=select_account">
+        <img src="{% static 'img/google-icon.png' %}" alt="Google Login">
+        <div class="google-login-text">Continue with Google</div>
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
