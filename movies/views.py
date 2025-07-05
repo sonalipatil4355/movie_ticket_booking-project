@@ -73,6 +73,3 @@ def SearchView(request):
 
     return redirect('movie_list')
 
-def sample_view(request):
-    # This is a sample view to demonstrate the use of the 'sample' URL
-    return render(request, 'movies/sample.html', {'message': 'This is a sample view.'})
